@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Vườn Hoa Thành Ngữ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap');
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f7f9fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Tỉ lệ 16:9 chuẩn trình chiếu */
+        .game-container {
+            width: 960px;
+            height: 540px;
+            background-color: #fff9e6; /* Vàng pastel */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+            background-image: radial-gradient(#ffe4e1 10%, transparent 10%);
+            background-size: 20px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a6fa5;
+            margin-top: 10px;
+            font-size: 28px;
+        }
+
+        .words-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* Thiết kế 2D phong cách kẹo ngọt cho các từ */
+        .word {
+            background-color: #ffb7b2; /* Hồng pastel */
+            color: #444;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 22px;
+            cursor: grab;
+            box-shadow: 0 4px 0 #e29b96;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+        
+        .word:active {
+            cursor: grabbing;
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .sentences-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 0 40px;
+        }
+
+        .sentence {
+            font-size: 24px;
+            color: #333;
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bold-word {
+            color: #e56b6f;
+            font-weight: 700;
+        }
+
+        /* Khu vực thả từ */
+        .dropzone {
+            width: 80px;
+            height: 40px;
+            background-color: #e2f0cb; /* Xanh lá pastel */
+            border: 2px dashed #a0c49d;
+            border-radius: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .dropzone.hovered {
+            background-color: #c7ceea;
+            border-color: #9facd3;
+            transform: scale(1.1);
+        }
+
+        .dropzone.filled {
+            border: none;
+            background-color: transparent;
+        }
+
+        /* Animation khi ghép sai */
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .flower-icon {
+            font-size: 24px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>🌸 Chọn từ thích hợp thay cho bông hoa trong mỗi thành ngữ: 🌸</h1>
+    <p style="text-align: center; color: #888; font-style: italic;">(Kéo các từ màu hồng thả vào các ô trống màu xanh)</p>
+
+    <!-- Khu vực các từ để kéo -->
+    <div class="words-container" id="wordBank">
+        <div class="word" draggable="true" id="w-lon">lớn</div>
+        <div class="word" draggable="true" id="w-noi">nơi</div>
+        <div class="word" draggable="true" id="w-uoc">ước</div>
+        <div class="word" draggable="true" id="w-luot">lượt</div>
+        <div class="word" draggable="true" id="w-yen">yên</div>
+        <div class="word" draggable="true" id="w-lanh">lành</div>
+    </div>
+
+    <!-- Khu vực các câu thành ngữ -->
+    <div class="sentences-container">
+        <div class="sentence">a. Ngày <div class="dropzone" data-answer="w-lanh"><span class="flower-icon">🌸</span></div> tháng <span class="bold-word">tốt</span></div>
+        <div class="sentence">b. Năm <span class="bold-word">lần</span> bảy <div class="dropzone" data-answer="w-luot"><span class="flower-icon">🌸</span></div></div>
+        <div class="sentence">c. Sóng <div class="dropzone" data-answer="w-yen"><span class="flower-icon">🌸</span></div> biển <span class="bold-word">lặng</span></div>
+        <div class="sentence">d. <span class="bold-word">Cầu</span> được <div class="dropzone" data-answer="w-uoc"><span class="flower-icon">🌸</span></div> thấy</div>
+        <div class="sentence">e. Đao <span class="bold-word">to</span> búa <div class="dropzone" data-answer="w-lon"><span class="flower-icon">🌸</span></div></div>
+        <div class="sentence">g. Đi đến <div class="dropzone" data-answer="w-noi"><span class="flower-icon">🌸</span></div> về đến <span class="bold-word">chốn</span></div>
+    </div>
+</div>
+
+<script>
+    const words = document.querySelectorAll('.word');
+    const dropzones = document.querySelectorAll('.dropzone');
+    let correctCount = 0;
+
+    // Thiết lập sự kiện kéo cho các từ
+    words.forEach(word => {
+        word.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', e.target.id);
+            setTimeout(() => e.target.style.opacity = '0.5', 0);
+        });
+
+        word.addEventListener('dragend', (e) => {
+            e.target.style.opacity = '1';
+        });
+    });
+
+    // Thiết lập sự kiện thả cho các ô trống
+    dropzones.forEach(zone => {
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            zone.classList.add('hovered');
+        });
+
+        zone.addEventListener('dragleave', () => {
+            zone.classList.remove('hovered');
+        });
+
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zone.classList.remove('hovered');
+            
+            const draggedId = e.dataTransfer.getData('text/plain');
+            const expectedId = zone.getAttribute('data-answer');
+            const draggedElement = document.getElementById(draggedId);
+
+            if (draggedId === expectedId) {
+                // Thả ĐÚNG
+                zone.innerHTML = ''; 
+                zone.appendChild(draggedElement);
+                zone.classList.add('filled');
+                draggedElement.style.boxShadow = 'none';
+                draggedElement.style.cursor = 'default';
+                draggedElement.draggable = false;
+                
+                correctCount++;
+                if(correctCount === 6) {
+                    setTimeout(() => alert('🎉 Chúc mừng! Đã hoàn thành xuất sắc vườn hoa thành ngữ!'), 300);
+                }
+            } else {
+                // Thả SAI
+                zone.classList.add('shake');
+                setTimeout(() => zone.classList.remove('shake'), 500);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
